@@ -30,31 +30,70 @@ app.get("/alunos", (req, res) => {
 app.use(express.json()); // lê o body no formato json
 
 // Rota /alunos/novo:
-app.post("/alunos/novo", (req, res) => {
-    const { nome, matricula, media } = req.body;
-    if((nome !== undefined) && (matricula !== undefined) && (media !== undefined)) {
-        const novoAluno = { nome: nome, matricula: matricula, media: media };
-        alunos.alunos.push(novoAluno);
-        res.json(`Novo aluno adicionado com sucesso! - nome: ${nome}, matrícula: ${matricula}, media: ${media}.`);
-    } else {
-        res.status(400).json({mensagem: "Erro ao adicionar um novo aluno! Para adicionar novo aluno você precisa digitar nome, matrícula e média."})
-    }    
-});
+// app.post("/alunos/novo", (req, res) => {
+//     const { nome, matricula, media } = req.body;
+//     if((nome !== undefined) && (matricula !== undefined) && (media !== undefined)) {
+//         const novoAluno = { nome: nome, matricula: matricula, media: media };
+//         alunos.alunos.push(novoAluno);
+//         res.json(`Novo aluno adicionado com sucesso! - nome: ${nome}, matrícula: ${matricula}, media: ${media}.`);
+//     } else {
+//         res.status(400).json({mensagem: "Erro ao adicionar um novo aluno! Para adicionar novo aluno você precisa digitar nome, matrícula e média."})
+//     }    
+// });
 
 // Crie uma rota POST para “/alunos/deletar/:index” que indica qual aluno remover do array de dados (index). Trate a chamada se o aluno não existir (404);
-app.post("/alunos/deletar/:index", (req, res) => {
-    const index = Number(req.params.index); // quando for um banco de dados passar o id e não index
-    const alunoDeletado = alunos.deletarAluno(index);
+// app.post("/alunos/deletar/:index", (req, res) => {
+//     const index = Number(req.params.index); // quando for um banco de dados passar o id e não index
+//     const alunoDeletado = alunos.deletarAluno(index);
 
-    if(alunoDeletado) {
-        res.json(alunoDeletado);
-    } else {
-        res.status(404).json({mensagem: "Aluno não encontrado"})
-    }
-})
+//     if(alunoDeletado) {
+//         res.json(alunoDeletado);
+//     } else {
+//         res.status(404).json({mensagem: "Aluno não encontrado"})
+//     }
+// })
 
 // Crie uma rota POST para /alunos/atualizar/:index, que no corpo da requisição recebe um objeto (nome, média) e atualiza os dados do aluno naquela posição. Trate a chamada se o aluno não existir (404);
-app.post("/alunos/atualizar/:index", (req, res) => {
+// app.post("/alunos/atualizar/:index", (req, res) => {
+//     const index = Number(req.params.index);
+//     const { nome, media } = req.body;
+//     const alunoAtualizado = alunos.atualizarAluno(index, nome, media);
+
+//     if(alunoAtualizado) {
+//         res.json(alunoAtualizado);
+//     } else {
+//         res.status(404).json({mensagem: "Aluno não encontrado"})
+//     }
+// })
+
+
+//  Desafio 1 - Refatore a aplicação e mova para alunos.js, os métodos de deletar, adicionar e atualizar um aluno:
+// as funções atualizar e deletar aluno já estavam em alunos.js
+// app.post("/alunos/novo", (req, res) => {    
+//     const { nome, matricula, media } = req.body;
+//     const alunoAdicionado = alunos.adicionarAluno(nome, matricula, media);
+
+//     if(alunoAdicionado) {
+//         res.json(alunoAdicionado);
+//     } else {
+//         res.status(404).json({mensagem: "Não foi possível adicionar o aluno."})
+//     }
+// })
+app.post("/alunos/novo", (req, res) => {    
+    const { nome, matricula, media } = req.body;
+    const novoAluno = { nome, matricula, media };
+    const alunoAdicionado = alunos.adicionarAluno(novoAluno);
+  
+    if (alunoAdicionado) {
+      res.json(`Novo aluno adicionado com sucesso! - nome: ${nome}, matrícula: ${matricula}, media: ${media}.`);
+    } else {
+      res.status(400).json({ mensagem: "Erro ao adicionar um novo aluno! Para adicionar novo aluno você precisa digitar nome, matrícula e média." });
+    }
+  });
+
+
+//  Desafio 2: Substituir as rotas POST de atualizar e deletar com os métodos PUT e DELETE respectivamente, reformulando as URLs para todas utilizarem o mesmo caminho /alunos, mudando apenas o método utilizado;
+app.put("/alunos/:index", (req, res) => {
     const index = Number(req.params.index);
     const { nome, media } = req.body;
     const alunoAtualizado = alunos.atualizarAluno(index, nome, media);
@@ -66,7 +105,16 @@ app.post("/alunos/atualizar/:index", (req, res) => {
     }
 })
 
+app.delete("/alunos/:index", (req, res) => {
+    const index = Number(req.params.index);
+    const alunoDeletado = alunos.deletarAluno(index);
 
+    if(alunoDeletado) {
+        res.json(alunoDeletado);
+    } else {
+        res.status(404).json({mensagem: "Aluno não encontrado"})
+    }
+})
 
 // Escuta das requisições:
 app.listen(3000, () => {

@@ -60,12 +60,48 @@ function atualizarAluno(index, nome, media) {
     }
 }
 
+//Desafio 1:
+// function adicionarAluno(req, res) {
+//     const { nome, matricula, media } = req.body;
+//     if ((nome !== undefined) && (matricula !== undefined) && (media !== undefined)) {
+//       const novoAluno = { nome: nome, matricula: matricula, media: media };
+//       alunos.adicionarAluno(novoAluno);
+//       res.json(`Novo aluno adicionado com sucesso! - nome: ${nome}, matrícula: ${matricula}, media: ${media}.`);
+//     } else {
+//       res.status(400).json({ mensagem: "Erro ao adicionar um novo aluno! Para adicionar novo aluno você precisa digitar nome, matrícula e média." });
+//     }
+//   }
+function adicionarAluno(novoAluno) {
+    if (novoAluno.nome && novoAluno.matricula && novoAluno.media) {
+      alunos.push(novoAluno);
+
+      //Desafio 0:
+      fs.writeFile(
+        path.join(__dirname, 'db.json'),
+        JSON.stringify(alunos),
+        err => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log('Dados do aluno atualizados com sucesso!');
+            }
+        }
+    );
+    
+      return novoAluno;
+    } else {
+      return null;
+    }
+  }
+
+  
 module.exports = {
     alunos,
     filtrarPorNome,
     filtrarPorMedia,
+    adicionarAluno,
     deletarAluno,
-    atualizarAluno
+    atualizarAluno    
 };
 
 
