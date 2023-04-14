@@ -42,13 +42,25 @@ app.post("/alunos/novo", (req, res) => {
 });
 
 // Crie uma rota POST para “/alunos/deletar/:index” que indica qual aluno remover do array de dados (index). Trate a chamada se o aluno não existir (404);
-
 app.post("/alunos/deletar/:index", (req, res) => {
     const index = Number(req.params.index); // quando for um banco de dados passar o id e não index
     const alunoDeletado = alunos.deletarAluno(index);
 
     if(alunoDeletado) {
         res.json(alunoDeletado);
+    } else {
+        res.status(404).json({mensagem: "Aluno não encontrado"})
+    }
+})
+
+// Crie uma rota POST para /alunos/atualizar/:index, que no corpo da requisição recebe um objeto (nome, média) e atualiza os dados do aluno naquela posição. Trate a chamada se o aluno não existir (404);
+app.post("/alunos/atualizar/:index", (req, res) => {
+    const index = Number(req.params.index);
+    const { nome, media } = req.body;
+    const alunoAtualizado = alunos.atualizarAluno(index, nome, media);
+
+    if(alunoAtualizado) {
+        res.json(alunoAtualizado);
     } else {
         res.status(404).json({mensagem: "Aluno não encontrado"})
     }

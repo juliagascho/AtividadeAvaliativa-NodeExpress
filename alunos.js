@@ -32,11 +32,23 @@ function deletarAluno(index) {
     return alunoDeletado.length > 0 ? alunoDeletado[0] : null;
   }
 
+function atualizarAluno(index, nome, media) {
+    if(index >= 0 && index < alunos.length) {
+        const alunoAtualizado = alunos[index];
+        alunoAtualizado.nome = nome || alunoAtualizado.nome;
+        alunoAtualizado.media = media || alunoAtualizado.media;
+        return alunoAtualizado;
+    } else {
+        return null
+    }
+}
+
 module.exports = {
     alunos,
     filtrarPorNome,
     filtrarPorMedia,
-    deletarAluno
+    deletarAluno,
+    atualizarAluno
 };
 
 
