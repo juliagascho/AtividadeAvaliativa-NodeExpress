@@ -32,11 +32,28 @@ function deletarAluno(index) {
     return alunoDeletado.length > 0 ? alunoDeletado[0] : null;
   }
 
+const fs = require('fs');
+const path = require('path');
+
 function atualizarAluno(index, nome, media) {
     if(index >= 0 && index < alunos.length) {
         const alunoAtualizado = alunos[index];
         alunoAtualizado.nome = nome || alunoAtualizado.nome;
         alunoAtualizado.media = media || alunoAtualizado.media;
+
+        //Desafio 0:
+        fs.writeFile(
+            path.join(__dirname, 'db.json'),
+            JSON.stringify(alunos),
+            err => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log('Dados do aluno atualizados com sucesso!');
+                }
+            }
+        );
+
         return alunoAtualizado;
     } else {
         return null
